@@ -10,7 +10,6 @@ from ondego_api.permissions import IsOwnerOrReadOnly
 class ProfileList(generics.ListAPIView):
     '''
     List all profiles
-    No Create view (post method), as profile creation handled by django signals
     '''
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer

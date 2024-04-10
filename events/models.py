@@ -1,12 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.utils import timezone
 
 
 class Event(models.Model):
     """
-    Post model, related to 'owner', i.e. a User instance.
-    Default image set so that we can always reference image.url.
+    Event model
     """
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -16,7 +14,7 @@ class Event(models.Model):
     where_place = models.CharField(max_length=50, blank=True)
     where_address = models.TextField(max_length=255, blank=True)
     link = models.URLField(max_length=200, blank=True)
-    when_start = models.DateTimeField(blank=True, default=timezone.now)
+    when_start = models.DateTimeField(blank=True)
     when_end = models.DateTimeField(blank=True)
     intention = models.TextField(max_length=255, blank=True)
 
