@@ -49,7 +49,7 @@ class EventTests(APITestCase):
         image_django = SimpleUploadedFile(image_file.name, image_file.read())
         # Create a user and authenticate
         claudia = User.objects.get(username='Claudia')
-        self.client.force_authenticate(user=claudia)
+        self.client.login(username='Claudia', password='testpassword')
         # Create an event
         response = self.client.post(
             '/events/',
@@ -100,6 +100,39 @@ class EventTests(APITestCase):
         # Check that the event was not created
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
+
+class EventDetailTests(APITestCase):
+    def setUp(self):
+        # Create a user
+        User.objects.create_user(
+            username='Claudia',
+            password='testpassword'
+        )
+
+    def test_logged_in_user_can_retrieve_event(self):
+        # Create an event
+        claudia = User.objects.get(username='Claudia')
+        event = Event.objects.create(
+            owner=claudia,
+            what_title='Birthday Party',
+            what_content='Come celebrate with me!',
+            where_place='123 Main St',
+            where_address='123 Main St',
+            when_start=timezone.make_aware(
+                timezone.datetime(2021, 8, 1, 12, 0)
+            ),
+            when_end=timezone.make_aware(
+                timezone.datetime(2021, 8, 1, 14, 0)
+            ),
+            intention='Cyborg extravaganza!',
+        )
+        # Authenticate the user
+        self.client.login(username='Claudia', password='testpassword')
+        # Retrieve the event
+        response = self.client.get(f'/events/{event.id}/')
+        # Check that the event is in the response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
     def test_logged_in_user_can_update_event(self):
         # Create an event
         claudia = User.objects.get(username='Claudia')
@@ -118,7 +151,7 @@ class EventTests(APITestCase):
             intention='Cyborg extravaganza!',
         )
         # Authenticate the user
-        self.client.force_authenticate(user=claudia)
+        self.client.login(username='Claudia', password='testpassword')
         # Update the event
         response = self.client.put(
             f'/events/{event.id}/',
@@ -196,7 +229,7 @@ class EventTests(APITestCase):
             intention='Cyborg extravaganza!',
         )
         # Authenticate the user
-        self.client.force_authenticate(user=claudia)
+        self.client.login(username='Claudia', password='testpassword')
         # Delete the event
         response = self.client.delete(f'/events/{event.id}/')
         # Check that the event was deleted
