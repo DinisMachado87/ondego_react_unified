@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 
 class Event(models.Model):
@@ -14,7 +15,8 @@ class Event(models.Model):
     what_content = models.TextField(blank=True)
     where_place = models.CharField(max_length=50, blank=True)
     where_address = models.TextField(max_length=255, blank=True)
-    when_start = models.DateTimeField(blank=True)
+    link = models.URLField(max_length=200, blank=True)
+    when_start = models.DateTimeField(blank=True, default=timezone.now)
     when_end = models.DateTimeField(blank=True)
     intention = models.TextField(max_length=255, blank=True)
 
