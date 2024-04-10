@@ -28,4 +28,4 @@ class Event(models.Model):
         ordering = ['-when_start']
 
     def __str__(self):
-        return f'{self.id} {self.title}'
+        return f'{self.id} - {self.what_title} on {self.when_start} at {self.where_place} with {self.owner}'

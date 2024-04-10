@@ -37,7 +37,7 @@ SECRET_KEY = 'django-insecure-#m1u7hb2qn-k3iq)t7&8^8ggu_7jp&*q$dlh1v)#n!&$1jazz!
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '8000-dinismachado8-ondegoapi-ym4pnjrpy16.ws-us110.gitpod.io',
+    '8000-dinismachado8-ondegoapi-1x5svqn4p6b.ws-eu110.gitpod.io',
 ]
 
 
@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'profiles',
     'events',
     'comments',
+    'joinings',
 ]
 
 MIDDLEWARE = [
