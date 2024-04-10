@@ -20,7 +20,7 @@ class Event(models.Model):
 
     event_image = models.ImageField(
         upload_to='ondego_events/',
-        default='ondego_event_placeholder/fhq6qy9kir3aw2ngkvlt',
+        default='../ondego_event_placeholder/fhq6qy9kir3aw2ngkvlt',
         blank=True
     )
 

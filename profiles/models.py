@@ -11,7 +11,8 @@ class Profile(models.Model):
     feeling = models.CharField(max_length=50, blank=True)
     would_like_to = models.CharField(max_length=50, blank=True)
     image = models.ImageField(
-        upload_to='images/', default='../IRL/1F47D_color_nztbks'
+        upload_to='images/',
+        default='../IRL/1F47D_color_nztbks'
     )
 
     class Meta:
