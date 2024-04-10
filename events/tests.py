@@ -108,6 +108,10 @@ class EventDetailTests(APITestCase):
             username='Claudia',
             password='testpassword'
         )
+        User.objects.create_user(
+            username='Heliot',
+            password='testpassword'
+        )
 
     def test_logged_in_user_can_retrieve_event(self):
         # Create an event
@@ -128,6 +132,28 @@ class EventDetailTests(APITestCase):
         )
         # Authenticate the user
         self.client.login(username='Claudia', password='testpassword')
+        # Retrieve the event
+        response = self.client.get(f'/events/{event.id}/')
+        # Check that the event is in the response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_unauthenticated_user_cannot_retrieve_event(self):
+        # Create an event
+        claudia = User.objects.get(username='Claudia')
+        event = Event.objects.create(
+            owner=claudia,
+            what_title='Birthday Party',
+            what_content='Come celebrate with me!',
+            where_place='123 Main St',
+            where_address='123 Main St',
+            when_start=timezone.make_aware(
+                timezone.datetime(2021, 8, 1, 12, 0)
+            ),
+            when_end=timezone.make_aware(
+                timezone.datetime(2021, 8, 1, 14, 0)
+            ),
+            intention='Cyborg extravaganza!',
+        )
         # Retrieve the event
         response = self.client.get(f'/events/{event.id}/')
         # Check that the event is in the response
@@ -174,6 +200,46 @@ class EventDetailTests(APITestCase):
         # Check that the event has the correct title
         self.assertEqual(Event.objects.get().what_title, 'Birthday Party')
 
+    def test_logged_in_user_cannot_update_other_users_event(self):
+        # Create an event
+        claudia = User.objects.get(username='Claudia')
+        heliot = User.objects.get(username='Heliot')
+        event = Event.objects.create(
+            owner=claudia,
+            what_title='Birthday Party',
+            what_content='Come celebrate with me!',
+            where_place='123 Main St',
+            where_address='123 Main St',
+            when_start=timezone.make_aware(
+                timezone.datetime(2021, 8, 1, 12, 0)
+            ),
+            when_end=timezone.make_aware(
+                timezone.datetime(2021, 8, 1, 14, 0)
+            ),
+            intention='Cyborg extravaganza!',
+        )
+        # Authenticate the user
+        self.client.login(username='Heliot', password='testpassword')
+        # Update the event
+        response = self.client.put(
+            f'/events/{event.id}/',
+            {
+                'what_title': 'Birthday Party',
+                'what_content': 'Come celebrate with me!',
+                'where_place': '123 Main St',
+                'where_address': '123 Main St',
+                'when_start': timezone.make_aware(
+                    timezone.datetime(2021, 8, 1, 12, 0)
+                ),
+                'when_end': timezone.make_aware(
+                    timezone.datetime(2021, 8, 1, 14, 0)
+                ),
+                'intention': 'Cyborg extravaganza!',
+            }
+        )
+        # Check that the event was not updated
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
     def test_unauthenticated_user_cannot_update_event(self):
         # Create an event
         claudia = User.objects.get(username='Claudia')
@@ -211,7 +277,7 @@ class EventDetailTests(APITestCase):
         # Check that the event was not updated
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_logged_in_user_can_delete_event(self):
+    def test_owner_can_delete_event(self):
         # Create an event
         claudia = User.objects.get(username='Claudia')
         event = Event.objects.create(
@@ -236,6 +302,33 @@ class EventDetailTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         # Check that the event is not in the database
         self.assertEqual(Event.objects.count(), 0)
+
+    def test_logged_in_user_cannot_delete_other_users_event(self):
+        # Create an event
+        claudia = User.objects.get(username='Claudia')
+        heliot = User.objects.get(username='Heliot')
+        event = Event.objects.create(
+            owner=claudia,
+            what_title='Birthday Party',
+            what_content='Come celebrate with me!',
+            where_place='123 Main St',
+            where_address='123 Main St',
+            when_start=timezone.make_aware(
+                timezone.datetime(2021, 8, 1, 12, 0)
+            ),
+            when_end=timezone.make_aware(
+                timezone.datetime(2021, 8, 1, 14, 0)
+            ),
+            intention='Cyborg extravaganza!',
+        )
+        # Authenticate the user
+        self.client.login(username='Heliot', password='testpassword')
+        # Delete the event
+        response = self.client.delete(f'/events/{event.id}/')
+        # Check that the event was not deleted
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        # Check that the event is in the database
+        self.assertEqual(Event.objects.count(), 1)
 
     def test_unauthenticated_user_cannot_delete_event(self):
         # Create an event
