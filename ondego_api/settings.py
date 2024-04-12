@@ -66,7 +66,6 @@ DEBUG = 'DEV' in os.environ
 
 ALLOWED_HOSTS = [
     '8000-dinismachado8-ondegoapi-1x5svqn4p6b.ws-eu110.gitpod.io',
-    'ondego-a06b37b92cec.herokuapp.com',
     os.environ.get('ALLOWED_HOST'),
 ]
 
