@@ -8,4 +8,5 @@ urlpatterns = [
     path('', include('events.urls')),
     path('', include('comments.urls')),
     path('', include('joinings.urls')),
+    path('', include('friends.urls')),
 ]
