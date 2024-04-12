@@ -16,7 +16,7 @@ class ProfileList(generics.ListAPIView):
     queryset = Profile.objects.annotate(
         events_count=Count('owner__event', distinct=True),
         joined_events_count=Count('owner__joining', distinct=True),
-    )
+    ).order_by('-created_at')
     serializer_class = ProfileSerializer
 
     filter_backends = [

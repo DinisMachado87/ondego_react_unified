@@ -86,6 +86,15 @@ This approach provided a clean, modular solution that adhered to Django REST Fra
 In conclusion, it showed me the importance of modularity, good practices, and careful debugging.
 
 
+### Debugging the Friend Requests
+
+I encountered an issue where I couldn't create friend requests in the API. Since most of the fields are part of an automated process and not manually edited, troubleshooting this problem was crucial. Upon investigation, I identified the root cause: the form was not rendering due to a misconfiguration in the serializer.
+
+The only manually editable field, `to_user`, which defines the user being friend-requested, was mistakenly marked as read-only in the serializer. As a result, the form was rendered without any fields, preventing users from creating friend requests.
+
+To resolve this issue, I updated the serializer to make the `to_user` field writable. By correcting this misconfiguration, users are now able to create friend requests successfully through the API.
+
+
 ## Contributors
 
 Dinis Machado
