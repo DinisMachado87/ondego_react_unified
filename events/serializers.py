@@ -7,6 +7,10 @@ class EventSerializer(serializers.ModelSerializer):
     is_owner = serializers.SerializerMethodField()
     profile_id = serializers.ReadOnlyField(source='owner.profile.id')
     profile_image = serializers.ReadOnlyField(source='owner.profile.image.url')
+    joining_id = serializers.SerializerMethodField()
+    joining_count = serializers.SerializerMethodField()
+    comments_count = serializers.SerializerMethodField()
+
 
     def validate_image(self, value):
         if value.size > 2 * 1024 * 1024:
@@ -25,6 +29,15 @@ class EventSerializer(serializers.ModelSerializer):
     def get_is_owner(self, obj):
         request = self.context.get('request')
         return obj.owner == request.user
+    
+    def get_joining_id(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            joining = joining.objects.filter(
+                event=obj, owner=user
+            ).first()
+            return joining.id if joining else None
+        return None
 
     class Meta:
         model = Event
@@ -44,4 +57,7 @@ class EventSerializer(serializers.ModelSerializer):
             'is_owner',
             'profile_id',
             'profile_image',
+            'joining_id',
+            'joining_count',
+            'comments_count',
         ]

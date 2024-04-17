@@ -1,5 +1,6 @@
-from django.http import Http404
-from rest_framework import status, permissions, generics
+from django.db.models import Count
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import permissions, generics, filters
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Event
@@ -8,10 +9,27 @@ from ondego_api.permissions import IsOwnerOrReadOnly
 
 
 class EventList(generics.ListCreateAPIView):
-    queryset = Event.objects.all()
     serializer_class = EventSerializer
-    permission_classes = [
-        permissions.IsAuthenticatedOrReadOnly
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    queryset = Event.objects.annotate(
+        joining_count=Count('joining', distinct=True),
+        comments_count=Count('comments', distinct=True)
+    ).order_by('-created_at')
+    filter_backends = [
+        filters.SearchFilter,
+        filters.OrderingFilter,
+        DjangoFilterBackend,
+    ]
+    filterset_fields = [
+        'owner',
+        'when_start',
+        'when_end',
+    ]
+    ordering_fields = [
+        'when_start',
+        'when_end',
+        'joining_count',
+        'comments_count'
     ]
 
     def perform_create(self, serializer):
@@ -19,6 +37,9 @@ class EventList(generics.ListCreateAPIView):
 
 
 class EventDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Event.objects.all()
     serializer_class = EventSerializer
     permission_classes = [IsOwnerOrReadOnly]
+    queryset = Event.objects.annotate(
+        joining_count=Count('joining', distinct=True),
+        comments_count=Count('comments', distinct=True)
+    ).order_by('-created_at')
