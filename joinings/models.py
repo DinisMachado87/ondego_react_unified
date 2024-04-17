@@ -14,7 +14,7 @@ class Joining(models.Model):
     ]
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     event = models.ForeignKey(
-        Event, on_delete=models.CASCADE, related_name='joinings')
+        Event, on_delete=models.CASCADE, related_name='joining')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     joining_status = models.CharField(

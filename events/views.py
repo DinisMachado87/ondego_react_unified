@@ -13,7 +13,7 @@ class EventList(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     queryset = Event.objects.annotate(
         joining_count=Count('joining', distinct=True),
-        comments_count=Count('comments', distinct=True)
+        comments_count=Count('comment', distinct=True)
     ).order_by('-created_at')
     filter_backends = [
         filters.SearchFilter,
@@ -41,5 +41,5 @@ class EventDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsOwnerOrReadOnly]
     queryset = Event.objects.annotate(
         joining_count=Count('joining', distinct=True),
-        comments_count=Count('comments', distinct=True)
+        comments_count=Count('comment', distinct=True)
     ).order_by('-created_at')

@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Event
+from events.models import Event
+from joinings.models import Joining
 
 
 class EventSerializer(serializers.ModelSerializer):
@@ -8,8 +9,8 @@ class EventSerializer(serializers.ModelSerializer):
     profile_id = serializers.ReadOnlyField(source='owner.profile.id')
     profile_image = serializers.ReadOnlyField(source='owner.profile.image.url')
     joining_id = serializers.SerializerMethodField()
-    joining_count = serializers.SerializerMethodField()
-    comments_count = serializers.SerializerMethodField()
+    joining_count = serializers.ReadOnlyField()
+    comments_count = serializers.ReadOnlyField()
 
 
     def validate_image(self, value):
@@ -33,7 +34,7 @@ class EventSerializer(serializers.ModelSerializer):
     def get_joining_id(self, obj):
         user = self.context['request'].user
         if user.is_authenticated:
-            joining = joining.objects.filter(
+            joining = Joining.objects.filter(
                 event=obj, owner=user
             ).first()
             return joining.id if joining else None
