@@ -62,7 +62,7 @@ REST_AUTH_SERIALIZERS = {
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = 'DEV' in os.environ
+DEBUG = 'DEBUG' in os.environ
 
 ALLOWED_HOSTS = [
     '8000-dinismachado8-ondegoapi-1x5svqn4p6b.ws-eu110.gitpod.io',
