@@ -74,7 +74,9 @@ class EventTests(APITestCase):
         self.assertEqual(Event.objects.count(), 1)
         # Check that the event has the correct title
         self.assertEqual(Event.objects.get().what_title, 'Birthday Party')
-
+        # check that the response includes an object with an id property 
+        # that corresponds to the id of the newly created event.
+        self.assertIn('id', response.data)
         # Close and delete the image file
         image_file.close()
         os.remove('test.jpg')
