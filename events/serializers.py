@@ -71,7 +71,10 @@ class EventSerializer(serializers.ModelSerializer):
             'profile_id',
             'profile_image',
             'joining_id',
-            'joining_count',
-            'joining_status',
             'comments_count',
+            # Joining counts and choices counts
+            'joining_status',
+            'joining_count',
+            'let_me_see_count',
+            'not_joining_count',
         ]
