@@ -12,7 +12,9 @@ class EventList(generics.ListCreateAPIView):
     serializer_class = EventSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     queryset = Event.objects.annotate(
-        joining_count=Count('joining', distinct=True),
+        let_me_see_count=Count('joining', filter=Count('joining', joining_status='3'), distinct=True),
+        not_joining_count=Count('joining', filter=Count('joining', joining_status='1'), distinct=True),
+        joining_count=Count('joining', filter=Count('joining', joining_status='2'), distinct=True),
         comments_count=Count('comment', distinct=True)
     ).order_by('-created_at')
     filter_backends = [

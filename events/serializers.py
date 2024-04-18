@@ -9,7 +9,10 @@ class EventSerializer(serializers.ModelSerializer):
     profile_id = serializers.ReadOnlyField(source='owner.profile.id')
     profile_image = serializers.ReadOnlyField(source='owner.profile.image.url')
     joining_id = serializers.SerializerMethodField()
+    joining_status = serializers.SerializerMethodField()
     joining_count = serializers.ReadOnlyField()
+    let_me_see_count = serializers.ReadOnlyField()
+    not_joining_count = serializers.ReadOnlyField()
     comments_count = serializers.ReadOnlyField()
 
 
@@ -39,6 +42,15 @@ class EventSerializer(serializers.ModelSerializer):
             ).first()
             return joining.id if joining else None
         return None
+    
+    def get_joining_status(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            joining = Joining.objects.filter(
+                event=obj, owner=user
+            ).first()
+            return joining.joining_status if joining else None
+        return None
 
     class Meta:
         model = Event
@@ -60,5 +72,6 @@ class EventSerializer(serializers.ModelSerializer):
             'profile_image',
             'joining_id',
             'joining_count',
+            'joining_status',
             'comments_count',
         ]
