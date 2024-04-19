@@ -1,4 +1,4 @@
-from django.db.models import Count
+from django.db.models import Count, Q
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions, generics, filters
 from rest_framework.response import Response
@@ -12,9 +12,12 @@ class EventList(generics.ListCreateAPIView):
     serializer_class = EventSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     queryset = Event.objects.annotate(
-        let_me_see_count=Count('joining', filter=Count('joining', joining_status='3'), distinct=True),
-        not_joining_count=Count('joining', filter=Count('joining', joining_status='1'), distinct=True),
-        joining_count=Count('joining', filter=Count('joining', joining_status='2'), distinct=True),
+        let_me_see_count=Count('joining', filter=Q(
+            joining__joining_status='3'), distinct=True),
+        not_joining_count=Count('joining', filter=Q(
+            joining__joining_status='1'), distinct=True),
+        joining_count=Count('joining', filter=Q(
+            joining__joining_status='2'), distinct=True),
         comments_count=Count('comment', distinct=True)
     ).order_by('-created_at')
     filter_backends = [
@@ -42,6 +45,11 @@ class EventDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = EventSerializer
     permission_classes = [IsOwnerOrReadOnly]
     queryset = Event.objects.annotate(
-        joining_count=Count('joining', distinct=True),
+        let_me_see_count=Count('joining', filter=Q(
+            joining__joining_status='3'), distinct=True),
+        not_joining_count=Count('joining', filter=Q(
+            joining__joining_status='1'), distinct=True),
+        joining_count=Count('joining', filter=Q(
+            joining__joining_status='2'), distinct=True),
         comments_count=Count('comment', distinct=True)
     ).order_by('-created_at')

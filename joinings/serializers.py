@@ -22,5 +22,5 @@ class JoiningSerializer(serializers.ModelSerializer):
             return super().create(validated_data)
         except IntegrityError:
             raise serializers.ValidationError(
-                'You already joined this event.'
+                'You already made this choice.'
             )
