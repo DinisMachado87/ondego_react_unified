@@ -27,6 +27,7 @@ class EventList(generics.ListCreateAPIView):
     ]
     filterset_fields = [
         'owner',
+        'what_title',
         'when_start',
         'when_end',
     ]
@@ -35,6 +36,10 @@ class EventList(generics.ListCreateAPIView):
         'when_end',
         'joining_count',
         'comments_count'
+    ]
+    search_fields = [
+        'owner__username',
+        'what_title',
     ]
 
     def perform_create(self, serializer):
