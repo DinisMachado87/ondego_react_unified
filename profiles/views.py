@@ -8,7 +8,6 @@ from ondego_api.permissions import IsOwnerOrReadOnly
 from django_filters.rest_framework import DjangoFilterBackend
 
 
-
 class ProfileList(generics.ListAPIView):
     '''
     List all profiles

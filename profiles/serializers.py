@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from .models import Profile
-from friends.models import Friend
-
+from friends.models import Friend, FriendRequest
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -10,8 +9,9 @@ class ProfileSerializer(serializers.ModelSerializer):
     events_count = serializers.ReadOnlyField()
     joined_events_count = serializers.ReadOnlyField()
     friends_id = serializers.SerializerMethodField()
+    has_friend_request = serializers.SerializerMethodField()
+    has_requested_friendship = serializers.SerializerMethodField()
     friends_count = serializers.ReadOnlyField()
-
 
     def get_friends_id(self, obj):
         '''
@@ -25,6 +25,29 @@ class ProfileSerializer(serializers.ModelSerializer):
             return friend.id if friend else None
         return None
 
+    def get_has_friend_request(self, obj):
+        '''
+        Check if the current user has a friend request from the profile owner.
+        '''
+        user = self.context['request'].user
+        if user.is_authenticated:
+            # Check if the current user has a friend request from the profile owner
+            friend_request = FriendRequest.objects.filter(
+                owner=obj.owner, to_user=user).first()
+            return friend_request.id if friend_request else None
+        return None
+
+    def get_has_requested_friendship(self, obj):
+        '''
+        Check if the current user has requested friendship to the profile owner.
+        '''
+        user = self.context['request'].user
+        if user.is_authenticated:
+            # Check if the current user has requested friendship to the profile owner
+            friend_request = FriendRequest.objects.filter(
+                owner=user, to_user=obj.owner).first()
+            return friend_request.id if friend_request else None
+        return None
 
     def get_is_owner(self, obj):
         request = self.context.get('request')
@@ -45,5 +68,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             'events_count',
             'joined_events_count',
             'friends_id',
+            'has_friend_request',
+            'has_requested_friendship',
             'friends_count',
         ]

@@ -26,8 +26,8 @@ class EventList(generics.ListCreateAPIView):
         DjangoFilterBackend,
     ]
     filterset_fields = [
+        # filters events by host
         'owner',
-        'what_title',
         'when_start',
         'when_end',
     ]
