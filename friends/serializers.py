@@ -10,7 +10,6 @@ class FriendRequestSerializer(serializers.ModelSerializer):
     Intermidiate model to create a friend instance between two users.
     '''
     owner = serializers.ReadOnlyField(source='owner.id')
-    is_approved = serializers.ReadOnlyField()
     created_at = serializers.ReadOnlyField()
 
     class Meta:

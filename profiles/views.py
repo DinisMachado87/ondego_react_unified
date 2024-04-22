@@ -28,6 +28,7 @@ class ProfileList(generics.ListAPIView):
         'owner__username',
         'events_count',
         'joined_events_count',
+        'owner__last_login',
     ]
 
 
