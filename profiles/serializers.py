@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import Profile
 from friends.models import Friend, FriendRequest
 
+
 class ProfileSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     is_owner = serializers.SerializerMethodField()
@@ -25,7 +26,11 @@ class ProfileSerializer(serializers.ModelSerializer):
             # Check if the current user is friend with the profile owner
             friend = Friend.objects.filter(
                 owner=user, friend=obj.owner).first()
-            return friend.friend.id if friend else None
+            return {
+                'friend_id': friend.friend.id,
+                'pk': friend.pk,
+                'owner': friend.owner.id,
+            } if friend else None
         return None
 
     def get_has_friend_request(self, obj):
@@ -37,7 +42,10 @@ class ProfileSerializer(serializers.ModelSerializer):
             # Check if the current user has a friend request from the profile owner
             friend_request = FriendRequest.objects.filter(
                 owner=obj.owner, to_user=user).first()
-            return friend_request.to_user.id if friend_request else None
+            return {
+                'friend_id': friend_request.to_user.id,
+                'pk': friend_request.pk,
+            } if friend_request else None
         return None
 
     def get_has_requested_friendship(self, obj):
@@ -49,7 +57,10 @@ class ProfileSerializer(serializers.ModelSerializer):
             # Check if the current user has requested friendship to the profile owner
             friend_request = FriendRequest.objects.filter(
                 owner=user, to_user=obj.owner).first()
-            return friend_request.owner.id if friend_request else None
+            return {
+                'friend_id': friend_request.owner.id,
+                'pk': friend_request.pk,
+            } if friend_request else None
         return None
 
     def get_is_owner(self, obj):
