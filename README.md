@@ -85,6 +85,12 @@ This approach provided a clean, modular solution that adhered to Django REST Fra
 
 In conclusion, it showed me the importance of modularity, good practices, and careful debugging.
 
+#### Permissions
+
+I encountered an issue where the user receiving the request could not approve or reject the friend request and realized it was due to the IsOwnerOrReadOnly permission class often used in Django REST Framework. This permission class only allows the owner of the object to edit it, which was not the case for friend requests.
+
+To resolve this issue, I created a custom permission class called IsFriendRequestedOrReadOnly. This permission class checks if the user is the recipient of the friend request and allows them to approve or reject it. It still allows both the sender and recipient to delete the friend request, so that the sender can cancel the request if they wish.
+
 
 ### Debugging the Friend Requests
 

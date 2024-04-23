@@ -54,14 +54,14 @@ def handle_friend_request(sender, instance, created, **kwargs):
     '''
     When a FriendRequest is approved, create Friend instances for both users
     '''
-    if instance.is_approved and created:
-        # Create Friend instance for the sender (from_user)
+    if instance.is_approved:
+        # Create Friend instance for the sender (owner)
         Friend.objects.create(
-            owner=instance.from_user, friend=instance.to_user)
+            owner=instance.owner, friend=instance.to_user)
 
         # Create Friend instance for the receiver (to_user)
         Friend.objects.create(
-            owner=instance.to_user, friend=instance.from_user)
+            owner=instance.to_user, friend=instance.owner)
 
         # Delete the friend request
         instance.delete()
