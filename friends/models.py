@@ -72,6 +72,9 @@ def handle_friend_deletion(sender, instance, **kwargs):
     '''
     When a Friend instance is deleted, delete the corresponding Friend instance
     '''
+    # Disconnect the signal
+    pre_delete.disconnect(handle_friend_deletion, sender=Friend)
+
     # Get the corresponding friend instance for the other user
     try:
         corresponding_friend = Friend.objects.get(
@@ -80,3 +83,6 @@ def handle_friend_deletion(sender, instance, **kwargs):
     except Friend.DoesNotExist:
         # Corresponding friend instance does not exist, no action needed
         pass
+
+    # Reconnect the signal
+    pre_delete.connect(handle_friend_deletion, sender=Friend)
