@@ -118,6 +118,12 @@ The third issue was that a user could create a friend request to a user who had 
 
 To solve this, I added a check in the `save` method of the `FriendRequest` model. Before saving a `FriendRequest` instance, I checked if there was already a `FriendRequest` instance from the other user. If such a `FriendRequest` instance existed, I raised a `ValidationError`. This prevented a user from creating a friend request if there was already an existing friend request from the other user.
 
+### Friend Request Approval
+
+The fourth issue was that the friend request approval process was not working as expected. When a user approved a friend request the non-reversed friend request validation was not allowing the friend request to be approved. 
+
+To solve this, I changed the validation in the `FriendRequest` to allow PUT requests but not POST requests.
+
 ## Contributors
 
 Dinis Machado

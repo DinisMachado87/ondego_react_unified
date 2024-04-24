@@ -31,18 +31,22 @@ class FriendRequest(models.Model):
         '''
         return FriendRequest.objects.filter(to_user=user)
 
+
     def save(self, *args, **kwargs):
         '''
         Override the save method to prevent a user from creating a friend request
         if there's already an existing friend request from the other user or
         if the user has already sent a friend request to the other user.
+        Only perform this check when creating a new FriendRequest, not when updating an existing one.
         '''
-        if FriendRequest.objects.filter(owner=self.to_user, to_user=self.owner).exists():
-            raise ValidationError(
-                'A friend request from this user already exists.')
-        if FriendRequest.objects.filter(owner=self.owner, to_user=self.to_user).exists():
-            raise ValidationError(
-                'You have already sent a friend request to this user.')
+        if self.pk is None:
+            pass
+            # if FriendRequest.objects.filter(owner=self.to_user, to_user=self.owner).exists():
+            #     raise ValidationError(
+            #         'A friend request from this user already exists.')
+            # if FriendRequest.objects.filter(owner=self.owner, to_user=self.to_user).exists():
+            #     raise ValidationError(
+            #         'You have already sent a friend request to this user.')
         super().save(*args, **kwargs)
 
 
