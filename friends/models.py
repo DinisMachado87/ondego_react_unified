@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
+from rest_framework.exceptions import ValidationError
 
 
 class FriendRequest(models.Model):
@@ -29,6 +30,20 @@ class FriendRequest(models.Model):
         Get all friend requests for a user
         '''
         return FriendRequest.objects.filter(to_user=user)
+
+    def save(self, *args, **kwargs):
+        '''
+        Override the save method to prevent a user from creating a friend request
+        if there's already an existing friend request from the other user or
+        if the user has already sent a friend request to the other user.
+        '''
+        if FriendRequest.objects.filter(owner=self.to_user, to_user=self.owner).exists():
+            raise ValidationError(
+                'A friend request from this user already exists.')
+        if FriendRequest.objects.filter(owner=self.owner, to_user=self.to_user).exists():
+            raise ValidationError(
+                'You have already sent a friend request to this user.')
+        super().save(*args, **kwargs)
 
 
 class Friend(models.Model):
