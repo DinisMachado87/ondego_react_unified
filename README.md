@@ -100,6 +100,23 @@ The only manually editable field, `to_user`, which defines the user being friend
 
 To resolve this issue, I updated the serializer to make the `to_user` field writable. By correcting this misconfiguration, users are now able to create friend requests successfully through the API.
 
+### Recursive Deletion
+
+The first issue was a recursive deletion when a `Friend` instance was deleted. In the `handle_friend_deletion` signal handler, I was trying to find and delete the corresponding `Friend` instance. However, deleting this corresponding `Friend` instance would trigger the `handle_friend_deletion` signal again, leading to a recursive loop.
+
+To solve this, I disconnected the signal before deleting the corresponding `Friend` instance and then reconnected it afterwards. This ensured that the deletion of the corresponding `Friend` instance wouldn't trigger the signal again.
+
+### Duplicate Friend Requests
+
+The second issue was that our `FriendRequest` model allowed a user to send multiple friend requests to the same user. This was because there was no constraint that prevented a user from sending a friend request to a user they'd already sent a request to.
+
+To prevent this, I added a unique constraint on the `owner` and `to_user` fields in the `FriendRequest` model. This ensured that a user could only have one outgoing friend request to another user at a time.
+
+### Mutual Friend Requests
+
+The third issue was that a user could create a friend request to a user who had already sent them a friend request which was causing serious issues in the handling of the friend requests in the front end as well as the conditional rendering of the buttons for it. 
+
+To solve this, I added a check in the `save` method of the `FriendRequest` model. Before saving a `FriendRequest` instance, I checked if there was already a `FriendRequest` instance from the other user. If such a `FriendRequest` instance existed, I raised a `ValidationError`. This prevented a user from creating a friend request if there was already an existing friend request from the other user.
 
 ## Contributors
 
