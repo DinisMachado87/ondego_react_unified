@@ -20,7 +20,7 @@ class IsFriendRequestedOrReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
         elif request.method == 'DELETE':
-            return obj.to_user == request.user or obj.from_user == request.user
+            return obj.to_user == request.user or obj.owner == request.user
         else:
             return obj.to_user == request.user
 
