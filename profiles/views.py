@@ -15,6 +15,7 @@ class ProfileList(generics.ListAPIView):
     queryset = Profile.objects.annotate(
         events_count=Count('owner__event', distinct=True),
         joined_events_count=Count('owner__joining', distinct=True),
+        friends_count=Count('owner__friend', distinct=True),
     ).order_by('-created_at')
     serializer_class = ProfileSerializer
 
@@ -39,6 +40,7 @@ class ProfileDetail(generics.RetrieveUpdateAPIView):
     queryset = Profile.objects.annotate(
         events_count=Count('owner__event', distinct=True),
         joined_events_count=Count('owner__joining', distinct=True),
+        friends_count=Count('owner__friend', distinct=True),
     )
     serializer_class = ProfileSerializer
     permission_classes = [IsOwnerOrReadOnly]

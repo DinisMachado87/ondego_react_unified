@@ -7,9 +7,9 @@ class Profile(models.Model):
     owner = models.OneToOneField(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    name = models.CharField(max_length=50, blank=True)
-    feeling = models.CharField(max_length=50, blank=True)
-    would_like_to = models.CharField(max_length=50, blank=True)
+    name = models.CharField(max_length=50, blank=True default="")
+    feeling = models.CharField(max_length=50, blank=True default="")
+    would_like_to = models.CharField(max_length=50, blank=True default="")
     image = models.ImageField(
         upload_to='images/',
         default='../IRL/1F47D_color_nztbks'
