@@ -36,6 +36,7 @@ class EventList(generics.ListCreateAPIView):
         'when_end',
         'joining_count',
         'comments_count'
+        'owner__last_login'
     ]
     search_fields = [
         'owner__username',
@@ -58,3 +59,25 @@ class EventDetail(generics.RetrieveUpdateDestroyAPIView):
             joining__joining_status='2'), distinct=True),
         comments_count=Count('comment', distinct=True)
     ).order_by('-created_at')
+    filter_backends = [
+        filters.SearchFilter,
+        filters.OrderingFilter,
+        DjangoFilterBackend,
+    ]
+    filterset_fields = [
+        # filters events by host
+        'owner',
+        'when_start',
+        'when_end',
+    ]
+    ordering_fields = [
+        'when_start',
+        'when_end',
+        'joining_count',
+        'comments_count'
+        'owner__last_login'
+    ]
+    search_fields = [
+        'owner__username',
+        'what_title',
+    ]
