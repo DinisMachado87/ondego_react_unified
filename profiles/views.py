@@ -6,6 +6,7 @@ from .models import Profile
 from .serializers import ProfileSerializer
 from ondego_api.permissions import IsOwnerOrReadOnly
 from django_filters.rest_framework import DjangoFilterBackend
+from django.db.models import F
 
 
 class ProfileList(generics.ListAPIView):
@@ -16,6 +17,7 @@ class ProfileList(generics.ListAPIView):
         events_count=Count('owner__event', distinct=True),
         joined_events_count=Count('owner__joining', distinct=True),
         friends_count=Count('owner__user_friends', distinct=True),
+        last_login=F('owner__last_login')
     ).order_by('-created_at')
     serializer_class = ProfileSerializer
 
@@ -29,7 +31,7 @@ class ProfileList(generics.ListAPIView):
         'owner__username',
         'events_count',
         'joined_events_count',
-        'owner__last_login',
+        'last_login',
     ]
 
 
@@ -41,6 +43,6 @@ class ProfileDetail(generics.RetrieveUpdateAPIView):
         events_count=Count('owner__event', distinct=True),
         joined_events_count=Count('owner__joining', distinct=True),
         friends_count=Count('owner__user_friends', distinct=True),
+        last_login=F('owner__last_login')
     )
-    serializer_class = ProfileSerializer
-    permission_classes = [IsOwnerOrReadOnly]
+
