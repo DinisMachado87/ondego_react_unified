@@ -124,6 +124,7 @@ The fourth issue was that the friend request approval process was not working as
 
 To solve this, I changed the validation in the `FriendRequest` to allow PUT requests but not POST requests.
 
+
 ## Contributors
 
 Dinis Machado

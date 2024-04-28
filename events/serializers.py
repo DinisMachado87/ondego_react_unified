@@ -6,6 +6,7 @@ from joinings.models import Joining
 class EventSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     is_owner = serializers.SerializerMethodField()
+    friends_ids = serializers.SerializerMethodField()
     profile_id = serializers.ReadOnlyField(source='owner.profile.id')
     profile_image = serializers.ReadOnlyField(source='owner.profile.image.url')
     joining_id = serializers.SerializerMethodField()
@@ -29,6 +30,9 @@ class EventSerializer(serializers.ModelSerializer):
                 'Image height too large'
             )
         return value
+    
+    def get_friends_ids(self, obj):
+        return obj.owner.user_friends.values_list('friend', flat=True)
 
     def get_is_owner(self, obj):
         request = self.context.get('request')
@@ -51,6 +55,8 @@ class EventSerializer(serializers.ModelSerializer):
             ).first()
             return joining.joining_status if joining else None
         return None
+
+        
 
     class Meta:
         model = Event
@@ -77,4 +83,5 @@ class EventSerializer(serializers.ModelSerializer):
             'joining_count',
             'let_me_see_count',
             'not_joining_count',
+            'friends_ids',
         ]

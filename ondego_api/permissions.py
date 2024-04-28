@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from rest_framework import permissions
 
 
@@ -36,3 +37,16 @@ class IsFriendOwnerToDelete(permissions.BasePermission):
             return obj.owner == request.user
         else:
             return False
+
+
+class IsFriendToSeeAndOwnerToEditOrDelete(permissions.BasePermission):
+    '''
+    Only friends can see the events by a user 
+    and only the owner can edit or delete
+    '''
+
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            # Check if the request.user is a friend of the obj.owner
+            return obj.owner == request.user or request.user.id in obj.friend_ids
+        return obj.owner == request.user
