@@ -56,6 +56,13 @@
 
 ## Manual Testing
 
+**1. Events filtering**:
+  - Users can filter events "going on" and which they are "joining".
+
+**2. Event permissions**:
+  - Users can only see events by friends.
+  - Only owners can edit and delete events.
+
 ## Resolved bugs
 
 ### Implementing Friends App

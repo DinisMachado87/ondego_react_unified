@@ -44,5 +44,6 @@ class ProfileDetail(generics.RetrieveUpdateAPIView):
         joined_events_count=Count('owner__joining', distinct=True),
         friends_count=Count('owner__user_friends', distinct=True),
         last_login=F('owner__last_login')
-    )
-
+    ).order_by('-created_at')
+    serializer_class = ProfileSerializer
+    permission_classes = [IsOwnerOrReadOnly]
