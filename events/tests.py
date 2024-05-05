@@ -118,73 +118,6 @@ class EventTests(APITestCase):
         # Check that the event was not created
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-User = get_user_model()
-class FriendsEventTests(APITestCase):
-    def setUp(self):
-        '''
-        Creates three users, two are friends, one is not
-        '''
-        self.factory = APIRequestFactory()  # Add this line
-
-        self.cláudia = User.objects.create_user(
-            username='Claudia',
-            password='testpassword'
-        )
-        self.heliot = User.objects.create_user(
-            username='Heliot',
-            password='testpassword'
-        )
-        self.joão = User.objects.create_user(
-            username='João',
-            password='testpassword'
-        )
-        
-        self.client.login(username='Heliot', password='testpassword')
-        FriendRequest.objects.create(
-            owner=self.heliot,
-            to_user=self.cláudia)
-        self.client.login(username='Claudia', password='testpassword')
-        #Cláudia approve friend request changing is_approved to True
-        FriendRequest.objects.filter(owner=self.heliot, to_user=self.cláudia).update(is_approved=True)  
-        print(Friend.objects.all())
-
-        self.event = Event.objects.create(
-            owner=self.cláudia,
-            what_title='Birthday Party',
-            what_content='Come celebrate with me!',
-            where_place='123 Main St',
-            where_address='123 Main St',
-            when_start=timezone.make_aware(
-                timezone.datetime(2021, 8, 1, 12, 0)
-            ),
-            when_end=timezone.make_aware(
-                timezone.datetime(2021, 8, 1, 14, 0)
-            ),
-            intention='Cyborg extravaganza!',
-        )
-
-        print(Event.objects.all())
-
-
-    def test_user_can_see_friends_event(self):
-        '''
-        Checks if a user can see a friend's event
-        '''
-        # Authenticate the user
-        self.client.login(username='Heliot', password='testpassword')
-        # Retrieve the event
-        request = self.client.get(f'/events/{self.event.id}/')
-        if request.status_code != status.HTTP_200_OK:
-            print(request.data)
-        # Serialize the event
-        serializer = EventSerializer(self.event)
-        # Check that the event is in the response
-        self.assertEqual(request.status_code, status.HTTP_200_OK)
-        # Check that the event has the correct title
-        self.assertEqual(serializer.data['what_title'], 'Birthday Party')
-        
-        
-
 class EventDetailTests(APITestCase):
     def setUp(self):
         '''
@@ -421,3 +354,117 @@ class EventDetailTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         # Check that the event is in the database
         self.assertEqual(Event.objects.count(), 1)
+        
+class FriendsEventTests(APITestCase):
+    def setUp(self):
+        '''
+        Creates three users, two are friends, one is not
+        '''
+        User.objects.create_user(
+            username='Claudia',
+            password='testpassword'
+        )
+        User.objects.create_user(
+            username='Heliot',
+            password='testpassword'
+        )
+        User.objects.create_user(
+            username='John',
+            password='testpassword'
+        )
+        Friend.objects.create(
+            owner=User.objects.get(username='Claudia'),
+            friend=User.objects.get(username='Heliot')
+        )
+        Friend.objects.create(
+            owner=User.objects.get(username='Heliot'),
+            friend=User.objects.get(username='Claudia')
+        )
+        self.event = Event.objects.create(
+            owner=User.objects.get(username='Claudia'),
+            what_title='Birthday Party',
+            what_content='Come celebrate with me!',
+            where_place='123 Main St',
+            where_address='123 Main St',
+            when_start=timezone.make_aware(
+                timezone.datetime(2021, 8, 1, 12, 0)
+            ),
+            when_end=timezone.make_aware(
+                timezone.datetime(2021, 8, 1, 14, 0)
+            ),
+            intention='Cyborg extravaganza!',
+        )
+
+    def test_user_can_see_friends_event(self):
+        '''
+        Checks if a user can see a friend's event
+        '''
+        # Authenticate the user
+        self.client.login(username='Heliot', password='testpassword')
+        # Retrieve the event
+        response = self.client.get(f'/events/{self.event.id}/')
+        # Check that the event is in the response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['what_title'], 'Birthday Party')
+        
+        
+    def test_user_cannot_see_non_friends_event(self):
+        '''
+        Checks that a user cannot see a non-friend's event
+        '''
+        # Authenticate the user
+        self.client.login(username='John', password='testpassword')
+        # Retrieve the event
+        response = self.client.get(f'/events/{self.event.id}/')
+        # Check that the event is not in the response
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        
+    def test_user_cannot_edit_friends_event(self):
+        '''
+        Checks that a user cannot edit a friend's event
+        '''
+        # Authenticate the user
+        self.client.login(username='Heliot', password='testpassword')
+        # Update the event
+        response = self.client.put(
+            f'/events/{self.event.id}/',
+            {
+                'what_title': 'Birthday Party',
+                'what_content': 'Come celebrate with me!',
+                'where_place': '123 Main St',
+                'where_address': '123 Main St',
+                'when_start': timezone.make_aware(
+                    timezone.datetime(2021, 8, 1, 12, 0)
+                ),
+                'when_end': timezone.make_aware(
+                    timezone.datetime(2021, 8, 1, 14, 0)
+                ),
+                'intention': 'Cyborg extravaganza!',
+            }
+        )
+        # Check that the event was not updated
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_user_cannot_delete_friends_event(self):
+        '''
+        Checks that a user cannot delete a friend's event
+        '''
+        # Authenticate the user
+        self.client.login(username='Heliot', password='testpassword')
+        # Delete the event
+        response = self.client.delete(f'/events/{self.event.id}/')
+        # Check that the event was not deleted
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        
+    def test_owner_can_delete_friends_event(self):
+        '''
+        Checks that the owner of an event can delete it
+        '''
+        # Authenticate the user
+        self.client.login(username='Claudia', password='testpassword')
+        # Delete the event
+        response = self.client.delete(f'/events/{self.event.id}/')
+        # Check that the event was deleted
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        # Check that the event is not in the database
+        self.assertEqual(Event.objects.count(), 0)
