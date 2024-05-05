@@ -35,8 +35,10 @@ class EventFilter(FilterSet):
         if value:
             now = timezone.now()
             two_hours_later = now + timedelta(hours=2)
-            return queryset.filter(when_start__lte=two_hours_later, when_end__gte=now)
+            return queryset.filter(
+                when_start__lte=two_hours_later, when_end__gte=now)
         return queryset
+
 
 class EventList(generics.ListCreateAPIView):
     serializer_class = EventSerializer
@@ -45,8 +47,10 @@ class EventList(generics.ListCreateAPIView):
     def get_queryset(self):
         user = self.request.user
         if user.is_authenticated:
-            # Include events where the request.user is a friend of the event owner or the owner itself
-            return Event.objects.filter(Q(owner__user_friends__friend=user) | Q(owner=user)).annotate(
+            # filter events by the user and friends
+            return Event.objects.filter(
+                Q(owner__user_friends__friend=user) | Q(owner=user)
+            ).annotate(
                 let_me_see_count=Count('joining', filter=Q(
                     joining__joining_status='3'), distinct=True),
                 not_joining_count=Count('joining', filter=Q(
@@ -57,7 +61,7 @@ class EventList(generics.ListCreateAPIView):
             ).order_by('-created_at')
         # If the user is not authenticated, return an empty queryset
         return Event.objects.none()
-    
+
     filter_backends = [
         filters.SearchFilter,
         filters.OrderingFilter,
@@ -94,8 +98,10 @@ class EventDetail(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         user = self.request.user
         if user.is_authenticated:
-            # Include events where the request.user is a friend of the event owner or the owner itself
-            return Event.objects.filter(Q(owner__user_friends__friend=user) | Q(owner=user)).annotate(
+            # filter events by the user and friends
+            return Event.objects.filter(
+                Q(owner__user_friends__friend=user) | Q(owner=user)
+            ).annotate(
                 let_me_see_count=Count('joining', filter=Q(
                     joining__joining_status='3'), distinct=True),
                 not_joining_count=Count('joining', filter=Q(
@@ -106,7 +112,7 @@ class EventDetail(generics.RetrieveUpdateDestroyAPIView):
             ).order_by('-created_at')
         # If the user is not authenticated, return an empty queryset
         return Event.objects.none()
-    
+
     filter_backends = [
         filters.SearchFilter,
         filters.OrderingFilter,

@@ -24,5 +24,8 @@
    "files.autoSave": "afterDelay",
    "workbench.colorTheme": "Modern Dark Monokai",
    "terminal.integrated.gpuAcceleration": "canvas",
-   "editor.defaultFormatter": "HookyQR.beautify"
+   "editor.defaultFormatter": "HookyQR.beautify",
+   "[python]": {
+      "editor.defaultFormatter": "ms-python.autopep8"
+   }
 }
