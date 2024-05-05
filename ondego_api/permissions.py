@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import permissions
+from django.core.exceptions import ObjectDoesNotExist
+from friends.models import Friend
 
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
@@ -48,5 +50,11 @@ class IsFriendToSeeAndOwnerToEditOrDelete(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             # Check if the request.user is a friend of the obj.owner
-            return obj.owner == request.user or request.user.id in obj.friend_ids
-        return obj.owner == request.user
+            try:
+                Friend.objects.get(owner=obj.owner, friend=request.user)
+                return True
+            except ObjectDoesNotExist:
+                pass
+            return obj.owner == request.user
+        else:
+            return obj.owner == request.user

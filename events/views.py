@@ -9,6 +9,7 @@ from ondego_api.permissions import IsFriendToSeeAndOwnerToEditOrDelete
 from django.utils import timezone
 from datetime import timedelta
 from django_filters import FilterSet, BooleanFilter, NumberFilter
+from rest_framework.exceptions import PermissionDenied
 
 
 class EventFilter(FilterSet):
@@ -88,6 +89,9 @@ class EventList(generics.ListCreateAPIView):
     filterset_class = EventFilter
 
     def perform_create(self, serializer):
+        if not self.request.user.is_authenticated:
+            raise PermissionDenied(
+                "You must be authenticated to create an event.")
         serializer.save(owner=self.request.user)
 
 

@@ -32,7 +32,9 @@ class EventSerializer(serializers.ModelSerializer):
         return value
     
     def get_friends_ids(self, obj):
-        return obj.owner.user_friends.values_list('friend', flat=True)
+        # Creates a list of the ids of the friends of the owner of the event
+        friends_ids = obj.owner.user_friends.values_list('friend', flat=True)
+        
 
     def get_is_owner(self, obj):
         request = self.context.get('request')
