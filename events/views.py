@@ -69,7 +69,7 @@ class EventList(generics.ListCreateAPIView):
         DjangoFilterBackend,
     ]
     filterset_fields = [
-        'owner__profile',
+        'owner',
         'when_start',
         'when_end',
         'joining_status',
@@ -124,7 +124,7 @@ class EventDetail(generics.RetrieveUpdateDestroyAPIView):
     ]
     filterset_class = EventFilter
     filterset_fields = [
-        'owner__profile',
+        'owner',
         'when_start',
         'when_end',
     ]
