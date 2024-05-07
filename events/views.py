@@ -124,7 +124,7 @@ class EventDetail(generics.RetrieveUpdateDestroyAPIView):
     ]
     filterset_class = EventFilter
     filterset_fields = [
-        'owner',
+        'owner__profile',
         'when_start',
         'when_end',
     ]
