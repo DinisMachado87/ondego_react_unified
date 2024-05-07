@@ -8,19 +8,18 @@ class Joining(models.Model):
     Joining model. A Joining is a user joining an event.
     """
     joining_choices = [
-        ('1', 'Cannot'),
-        ('2', 'Joining'),
-        ('3', 'let me see'),
+        (1, 'Cannot'),
+        (2, 'Joining'),
+        (3, 'let me see'),
     ]
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     event = models.ForeignKey(
         Event, on_delete=models.CASCADE, related_name='joining')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    joining_status = models.CharField(
-        max_length=5,
+    joining_status = models.IntegerField(
         choices=joining_choices,
-        default='1'
+        default=1
     )
 
     class Meta:
