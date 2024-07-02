@@ -20,10 +20,13 @@ class IsFriendRequestedOrReadOnly(permissions.BasePermission):
     but both the to_user and the owner can delete
     '''
     def has_object_permission(self, request, view, obj):
+        # Allow viewing for both the to_user and the owner
         if request.method in permissions.SAFE_METHODS:
-            return True
+            return obj.to_user == request.user or obj.owner == request.user
+        # Allow delete for both the to_user and the owner
         elif request.method == 'DELETE':
             return obj.to_user == request.user or obj.owner == request.user
+        # Allow all other modifications only for the to_user
         else:
             return obj.to_user == request.user
 

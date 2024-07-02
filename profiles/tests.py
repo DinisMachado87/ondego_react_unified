@@ -23,8 +23,9 @@ class ProfileTests(APITestCase):
         profile = Profile.objects.get(owner=user)
         self.assertEqual(profile.owner, user)
 
-    def test_profile_list_is_public(self):
-        # Check that the profile list is public
+    def test_profile_list_is_public_for_authenticated_users(self):
+        # Check that the profile list is public for authenticated users
+        self.client.login(username='Claudia', password='testpassword')
         response = self.client.get('/profiles/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
