@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from .models import Profile
 from .serializers import ProfileSerializer
 from ondego_api.permissions import IsOwnerOrReadOnly
+from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import F
 
@@ -20,6 +21,7 @@ class ProfileList(generics.ListAPIView):
         last_login=F('owner__last_login')
     ).order_by('-created_at')
     serializer_class = ProfileSerializer
+    permission_classes = [IsAuthenticated]
 
     filter_backends = [
         filters.OrderingFilter,

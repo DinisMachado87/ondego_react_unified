@@ -90,7 +90,7 @@ class JoiningTests(APITestCase):
             },
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['joining_status'], '3')
+        self.assertEqual(response.data['joining_status'], 3)
 
     def test_other_user_cannot_change_joining_status(self):
         '''
