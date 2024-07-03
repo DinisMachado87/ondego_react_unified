@@ -16,8 +16,8 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
 
 class IsFriendRequestedOrReadOnly(permissions.BasePermission):
     '''
-    Only the to_user in the friend request can edit
-    but both the to_user and the owner can delete
+    Only the to_user in the friend request can edit,
+    but both the to_user and the owner can delete and view.
     '''
     def has_object_permission(self, request, view, obj):
         # Allow viewing for both the to_user and the owner
@@ -33,12 +33,11 @@ class IsFriendRequestedOrReadOnly(permissions.BasePermission):
 
 class IsFriendOwnerToDelete(permissions.BasePermission):
     '''
-    Only the owner can delete the friend request
+    Only the owner can see and delete the friend request
     '''
     def has_object_permission(self, request, view, obj):
-        if request.method in permissions.SAFE_METHODS:
-            return True
-        elif request.method == 'DELETE':
+        # Allow viewing and deleting only for the owner
+        if request.method in permissions.SAFE_METHODS or request.method == 'DELETE':
             return obj.owner == request.user
         else:
             return False
