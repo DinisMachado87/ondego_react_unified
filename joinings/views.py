@@ -7,7 +7,7 @@ from .serializers import JoiningSerializer
 class JoiningList(generics.ListCreateAPIView):
     queryset = Joining.objects.all()
     serializer_class = JoiningSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
