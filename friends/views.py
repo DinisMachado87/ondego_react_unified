@@ -35,7 +35,14 @@ class FriendsList(generics.ListAPIView):
     '''
     serializer_class = FriendSerializer
     permission_classes = [IsFriendOwnerToDelete]
-    queryset = Friend.objects.all()
+
+    def get_queryset(self):
+        """
+        Returns a list of all the friends
+        for the currently authenticated user.
+        """
+        user = self.request.user
+        return Friend.objects.filter(owner=user)
 
 
 class FriendDetail(generics.RetrieveUpdateDestroyAPIView):
