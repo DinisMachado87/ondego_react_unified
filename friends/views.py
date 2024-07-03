@@ -4,6 +4,7 @@ from ondego_api.permissions import (
     IsFriendRequestedOrReadOnly,
     IsFriendOwnerToDelete
 )
+from django.http import Http404
 from .models import Friend, FriendRequest
 from .serializers import FriendSerializer, FriendRequestSerializer
 
@@ -39,10 +40,14 @@ class FriendsList(generics.ListAPIView):
     def get_queryset(self):
         """
         Returns a list of all the friends
-        for the currently authenticated user.
+        for the currently authenticated user, 
+        or an empty list if the user is not authenticated.
         """
         user = self.request.user
-        return Friend.objects.filter(owner=user)
+        if user.is_authenticated:
+            return Friend.objects.filter(owner=user)
+        else:
+            return Friend.objects.none()
 
 
 class FriendDetail(generics.RetrieveUpdateDestroyAPIView):
