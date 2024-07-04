@@ -1,5 +1,5 @@
 from rest_framework import generics, permissions
-from ondego_api.permissions import IsOwnerOrReadOnly
+from ondego_api.permissions import IsOwnerOrReadOnly, IsFriendOfEventOwnerToSeeCommentAndCommentOwnerToEditOrDelete
 from .models import Comment
 from .serializer import CommentSerializer, CommentDetailSerializer
 from django_filters.rest_framework import DjangoFilterBackend
@@ -8,7 +8,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 class CommentList(generics.ListCreateAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [
+        IsFriendOfEventOwnerToSeeCommentAndCommentOwnerToEditOrDelete]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['event']
     
@@ -20,6 +21,7 @@ class CommentList(generics.ListCreateAPIView):
 class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentDetailSerializer
-    permission_classes = [IsOwnerOrReadOnly]
+    permission_classes = [
+        IsFriendOfEventOwnerToSeeCommentAndCommentOwnerToEditOrDelete]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['event']

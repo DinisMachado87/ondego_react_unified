@@ -60,3 +60,24 @@ class IsFriendToSeeAndOwnerToEditOrDelete(permissions.BasePermission):
             return obj.owner == request.user
         else:
             return obj.owner == request.user
+
+class IsFriendOfEventOwnerToSeeCommentAndCommentOwnerToEditOrDelete(permissions.BasePermission):
+    '''
+    Only friends of the owner of the event can see the comments by any user,
+    but only the owner of the comment can edit or delete
+    '''
+    def has_object_permission(self, request, view, obj):
+        # First check if the user is authenticated
+        if not request.user.is_authenticated:
+            return False
+
+        if request.method in permissions.SAFE_METHODS:
+            # Check if the request.user is a friend of the obj.owner
+            try:
+                Friend.objects.get(owner=obj.event.owner, friend=request.user)
+                return True
+            except ObjectDoesNotExist:
+                pass
+            return obj.owner == request.user
+        else:
+            return obj.owner == request.user
