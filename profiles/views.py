@@ -21,7 +21,7 @@ class ProfileList(generics.ListAPIView):
         last_login=F('owner__last_login')
     ).order_by('-created_at')
     serializer_class = ProfileSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
 
     filter_backends = [
         filters.OrderingFilter,
@@ -48,4 +48,4 @@ class ProfileDetail(generics.RetrieveUpdateAPIView):
         last_login=F('owner__last_login')
     ).order_by('-created_at')
     serializer_class = ProfileSerializer
-    permission_classes = [IsOwnerOrReadOnly]
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
