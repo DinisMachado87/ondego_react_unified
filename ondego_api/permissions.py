@@ -61,7 +61,7 @@ class IsFriendToSeeAndOwnerToEditOrDelete(permissions.BasePermission):
         else:
             return obj.owner == request.user
 
-class IsFriendOfEventOwnerToSeeCommentAndCommentOwnerToEditOrDelete(permissions.BasePermission):
+class IsFriendOfEventOwnerToSeeAndOwnerToEditOrDelete(permissions.BasePermission):
     '''
     Only friends of the owner of the event can see the comments by any user,
     but only the owner of the comment can edit or delete

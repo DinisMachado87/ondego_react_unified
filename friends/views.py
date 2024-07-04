@@ -15,7 +15,17 @@ class FriendsRequest(generics.ListCreateAPIView):
     '''
     serializer_class = FriendRequestSerializer
     permission_classes = [IsOwnerOrReadOnly]
-    queryset = FriendRequest.objects.all()
+    def get_queryset(self):
+        """
+        Returns a list of all the friend requests where the user is
+        the owner or the to_user,
+        or an empty list if the user is not authenticated.
+        """
+        user = self.request.user
+        if user.is_authenticated:
+            return FriendRequest.objects.filter(owner=user) | FriendRequest.objects.filter(to_user=user)
+        else:
+            return FriendRequest.objects.none()
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
@@ -27,8 +37,17 @@ class FriendRequestDetail(generics.RetrieveUpdateDestroyAPIView):
     '''
     serializer_class = FriendRequestSerializer
     permission_classes = [IsFriendRequestedOrReadOnly]
-    queryset = FriendRequest.objects.all()
-
+    def get_queryset(self):
+        """
+        Returns a list of all the friend requests where the user is
+        the owner or the to_user,
+        or an empty list if the user is not authenticated.
+        """
+        user = self.request.user
+        if user.is_authenticated:
+            return FriendRequest.objects.filter(owner=user) | FriendRequest.objects.filter(to_user=user)
+        else:
+            return FriendRequest.objects.none()
 
 class FriendsList(generics.ListAPIView):
     '''
@@ -56,4 +75,15 @@ class FriendDetail(generics.RetrieveUpdateDestroyAPIView):
     '''
     serializer_class = FriendSerializer
     permission_classes = [IsFriendOwnerToDelete]
-    queryset = Friend.objects.all()
+
+    def get_queryset(self):
+        """
+        Returns a list of all the friends
+        for the currently authenticated user, 
+        or an empty list if the user is not authenticated.
+        """
+        user = self.request.user
+        if user.is_authenticated:
+            return Friend.objects.filter(owner=user)
+        else:
+            return Friend.objects.none()
