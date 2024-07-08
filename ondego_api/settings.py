@@ -65,7 +65,6 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = 'DEBUG' in os.environ
 
 ALLOWED_HOSTS = [
-    '8000-dinismachado8-ondegoapi-1x5svqn4p6b.ws-eu110.gitpod.io',
     os.environ.get('ALLOWED_HOST'),
 ]
 
