@@ -5,15 +5,16 @@ from .serializers import JoiningSerializer
 
 
 class JoiningList(generics.ListCreateAPIView):
-    def get_queryset(self):
-        """
-        Returns a list of all the joinings by all users 
-        but only to events where the owner is Friend of the user
-        """
-        user = self.request.user
-        return Joining.objects.filter(event__owner__friend__friend=user)
     serializer_class = JoiningSerializer
     permission_classes = [IsOwnerOrReadOnly]
+
+    def get_queryset(self):
+        '''
+        Returns a list of all the joinings in events by the user and friends
+        '''
+        user = self.request.user
+        friend_ids = user.friend_friends.all().values_list('owner_id', flat=True)
+        return Joining.objects.filter(event__owner_id__in=friend_ids)
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
@@ -22,10 +23,11 @@ class JoiningList(generics.ListCreateAPIView):
 class JoiningDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = JoiningSerializer
     permission_classes = [IsOwnerOrReadOnly]
+
     def get_queryset(self):
-        """
-        Returns a list of all the joinings by all users 
-        but only to events where the owner is Friend of the user
-        """
+        '''
+        Returns a list of all the joinings in events by the user and friends
+        '''
         user = self.request.user
-        return Joining.objects.filter(event__owner__friend__friend=user)
+        friend_ids = user.friend_friends.all().values_list('owner_id', flat=True)
+        return Joining.objects.filter(event__owner_id__in=friend_ids)

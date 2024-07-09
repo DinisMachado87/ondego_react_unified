@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Event
 from .serializers import EventSerializer
-from ondego_api.permissions import IsFriendToSeeAndOwnerToEditOrDelete
+from ondego_api.permissions import IsOwnerOrReadOnly
 from django.utils import timezone
 from datetime import timedelta
 from django_filters import FilterSet, BooleanFilter, NumberFilter
@@ -44,7 +44,7 @@ class EventFilter(FilterSet):
 
 class EventList(generics.ListCreateAPIView):
     serializer_class = EventSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsOwnerOrReadOnly, IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
@@ -98,7 +98,7 @@ class EventList(generics.ListCreateAPIView):
 
 class EventDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = EventSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsOwnerOrReadOnly, IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
