@@ -65,9 +65,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = 'DEBUG' in os.environ
 
 ALLOWED_HOSTS = [
-    'localhost',
-    os.environ.get('ALLOWED_HOST'),
-]
+    host.strip() for host in os.environ.get('ALLOWED_HOST', '').split(',')
+    ]
 
 CORS_ALLOW_HEADERS = list(default_headers)
 CORS_ALLOW_METHODS = list(default_methods)
