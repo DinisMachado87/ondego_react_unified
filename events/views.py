@@ -1,6 +1,7 @@
 from django.db.models import Count, Q
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import permissions, generics, filters
+from rest_framework import generics, filters
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Event
@@ -43,7 +44,7 @@ class EventFilter(FilterSet):
 
 class EventList(generics.ListCreateAPIView):
     serializer_class = EventSerializer
-    permission_classes = [IsFriendToSeeAndOwnerToEditOrDelete]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
@@ -97,7 +98,7 @@ class EventList(generics.ListCreateAPIView):
 
 class EventDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = EventSerializer
-    permission_classes = [IsFriendToSeeAndOwnerToEditOrDelete]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
