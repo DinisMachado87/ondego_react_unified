@@ -65,8 +65,9 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = 'DEBUG' in os.environ
 
 ALLOWED_HOSTS = [
-    host.strip() for host in os.environ.get('ALLOWED_HOST', '').split(',')
-    ]
+    os.environ.get('ALLOWED_HOST'),
+    'localhost',
+]
 
 CORS_ALLOW_HEADERS = list(default_headers)
 CORS_ALLOW_METHODS = list(default_methods)
@@ -121,8 +122,10 @@ if 'CLIENT_ORIGIN' in os.environ:
     ]
 
 if 'CLIENT_ORIGIN_DEV' in os.environ:
+    extracted_url = re.match(
+        r'^.+-', os.environ.get('CLIENT_ORIGIN_DEV', ''), re.IGNORECASE).group(0)
     CORS_ALLOWED_ORIGIN_REGEXES = [
-        os.environ.get('CLIENT_ORIGIN_DEV')
+        r"^https://.*\.codeinstitute-ide\.net$",
     ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -157,8 +160,8 @@ if 'DEV' in os.environ:
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
         } if 'DEV' in os.environ else dj_database_url.parse(
-        os.environ.get('DATABASE_URL')
-    ))
+            os.environ.get('DATABASE_URL')
+        ))
     }
 else:
     DATABASES = {
