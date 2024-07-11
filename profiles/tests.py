@@ -80,7 +80,9 @@ class ProfileDetailTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_other_authenticated_users_cannot_edit_profile(self):
-        # Check that other authenticated users cannot edit the profile
+        '''
+        Check that other authenticated users cannot edit the profile
+        '''
         user = User.objects.get(username='Claudia')
         self.client.login(username='Heliot', password='testpassword')
         response = self.client.put(
@@ -95,7 +97,9 @@ class ProfileDetailTests(APITestCase):
             response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_other_authenticated_users_cannot_delete_profile(self):
-        # Check that other authenticated users cannot delete the profile
+        '''
+        Check that other authenticated users cannot delete the profile
+        '''
         user = User.objects.get(username='Claudia')
         self.client.login(username='Heliot', password='testpassword')
         response = self.client.delete(f'/profiles/{user.id}/')
@@ -103,7 +107,9 @@ class ProfileDetailTests(APITestCase):
             response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_unauthenticated_users_cannot_edit_profile(self):
-        # Check that unauthenticated users cannot edit the profile
+        '''
+        Check that unauthenticated users cannot edit the profile
+        '''
         user = User.objects.get(username='Claudia')
         response = self.client.put(
             f'/profiles/{user.id}/',
@@ -117,7 +123,9 @@ class ProfileDetailTests(APITestCase):
             response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_unauthenticated_users_cannot_delete_profile(self):
-        # Check that unauthenticated users cannot delete the profile
+        '''
+        Check that unauthenticated users cannot delete the profile
+        '''
         user = User.objects.get(username='Claudia')
         response = self.client.delete(f'/profiles/{user.id}/')
         self.assertEqual(

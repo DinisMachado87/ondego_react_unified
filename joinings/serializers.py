@@ -18,6 +18,10 @@ class JoiningSerializer(serializers.ModelSerializer):
         ]
 
     def create(self, validated_data):
+        '''
+        Create a new joining instance
+        if the user has not already joined the event.
+        '''
         try:
             return super().create(validated_data)
         except IntegrityError:

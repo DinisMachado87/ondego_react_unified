@@ -47,6 +47,9 @@ class EventList(generics.ListCreateAPIView):
     permission_classes = [IsOwnerOrReadOnly, IsAuthenticated]
 
     def get_queryset(self):
+        '''
+        Filter events by the user and friends
+        '''
         user = self.request.user
         if user.is_authenticated:
             # filter events by the user and friends
@@ -101,6 +104,9 @@ class EventDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsOwnerOrReadOnly, IsAuthenticated]
 
     def get_queryset(self):
+        '''
+        Filter events by the user and friends
+        '''
         user = self.request.user
         if user.is_authenticated:
             # filter events by the user and friends

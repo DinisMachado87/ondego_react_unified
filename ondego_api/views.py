@@ -12,8 +12,6 @@ from .settings import (
 def root_route(request):
     return Response({"message": "Welcome to ondego app API!"})
 
-# dj-rest-auth logout view fix
-
 
 @api_view(['POST'])
 def logout_route(request):

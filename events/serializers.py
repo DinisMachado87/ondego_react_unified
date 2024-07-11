@@ -17,6 +17,9 @@ class EventSerializer(serializers.ModelSerializer):
     comments_count = serializers.ReadOnlyField()
 
     def validate_image(self, value):
+        '''
+        Check if the image is too large
+        '''
         if value.size > 2 * 1024 * 1024:
             raise serializers.ValidationError(
                 'Image file too large')
@@ -31,14 +34,22 @@ class EventSerializer(serializers.ModelSerializer):
         return value
 
     def get_friends_ids(self, obj):
-        # Creates a list of the ids of the friends of the owner of the event
+        '''
+        Creates a list of the ids of the friends of the owner of the event
+        '''
         friends_ids = obj.owner.user_friends.values_list('friend', flat=True)
 
     def get_is_owner(self, obj):
+        '''
+        Check if the current user is the owner of the event
+        '''
         request = self.context.get('request')
         return obj.owner == request.user
 
     def get_joining_id(self, obj):
+        '''
+        Get the id of the joining object of the current user to the event
+        '''
         user = self.context['request'].user
         if user.is_authenticated:
             joining = Joining.objects.filter(
@@ -48,6 +59,9 @@ class EventSerializer(serializers.ModelSerializer):
         return None
 
     def get_joining_status(self, obj):
+        '''
+        Get the joining status of the current user to the event
+        '''
         user = self.context['request'].user
         if user.is_authenticated:
             joining = Joining.objects.filter(
