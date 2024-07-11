@@ -27,8 +27,11 @@ class ProfileSerializer(serializers.ModelSerializer):
             friend = Friend.objects.filter(
                 owner=user, friend=obj.owner).first()
             return {
+                # The id of the friend object
                 'friend_id': friend.friend.id,
+                # The primary key of the friend object
                 'pk': friend.pk,
+                # The id of the owner of the friend object
                 'owner': friend.owner.id,
             } if friend else None
         return None

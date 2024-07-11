@@ -39,6 +39,10 @@ Visit the deployed [ödëgö API here](https://ondego-api.herokuapp.com/)
 
 - **Comments**: Users can create comments on events. Comments include the user who created the comment, the event the comment is on, and the comment text. Users can edit and delete their comments but not the comments of others.
 
+## ERD
+
+![ERD](documentation/erd_ondego.png)
+
 ## Development User Stories
 
 ![Agile Board](documentation/agile_board.png)
