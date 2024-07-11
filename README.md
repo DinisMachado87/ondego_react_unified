@@ -351,3 +351,5 @@ A special thank you to the oversight and discussion insight from my Code Institu
 
 ## Verification
 
+All files verified for PEP-8 compliance using [Code Institute Python Linter](https://pep8ci.herokuapp.com/).
+
