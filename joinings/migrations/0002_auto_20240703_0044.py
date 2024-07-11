@@ -15,11 +15,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='joining',
             name='event',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='joining', to='events.event'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, related_name='joining', to='events.event'),
         ),
         migrations.AlterField(
             model_name='joining',
             name='joining_status',
-            field=models.IntegerField(choices=[(1, 'Cannot'), (2, 'Joining'), (3, 'let me see')], default=1),
+            field=models.IntegerField(
+                choices=[(1, 'Cannot'), (2, 'Joining'), (3, 'let me see')], default=1),
         ),
     ]

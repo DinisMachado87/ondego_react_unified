@@ -13,7 +13,6 @@ from django.contrib.auth import get_user_model
 from rest_framework.test import APIRequestFactory
 
 
-
 class EventTests(APITestCase):
 
     def setUp(self):
@@ -117,6 +116,7 @@ class EventTests(APITestCase):
         )
         # Check that the event was not created
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
 
 class EventDetailTests(APITestCase):
     def setUp(self):
@@ -354,7 +354,8 @@ class EventDetailTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         # Check that the event is in the database
         self.assertEqual(Event.objects.count(), 1)
-        
+
+
 class FriendsEventTests(APITestCase):
     def setUp(self):
         '''
@@ -406,8 +407,7 @@ class FriendsEventTests(APITestCase):
         # Check that the event is in the response
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['what_title'], 'Birthday Party')
-        
-        
+
     def test_user_cannot_see_non_friends_event(self):
         '''
         Checks that a user cannot see a non-friend's event
@@ -418,7 +418,7 @@ class FriendsEventTests(APITestCase):
         response = self.client.get(f'/events/{self.event.id}/')
         # Check that the event is not in the response
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        
+
     def test_user_cannot_edit_friends_event(self):
         '''
         Checks that a user cannot edit a friend's event
@@ -455,7 +455,7 @@ class FriendsEventTests(APITestCase):
         response = self.client.delete(f'/events/{self.event.id}/')
         # Check that the event was not deleted
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        
+
     def test_owner_can_delete_friends_event(self):
         '''
         Checks that the owner of an event can delete it

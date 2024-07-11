@@ -15,6 +15,7 @@ class FriendsRequest(generics.ListCreateAPIView):
     '''
     serializer_class = FriendRequestSerializer
     permission_classes = [IsOwnerOrReadOnly]
+
     def get_queryset(self):
         """
         Returns a list of all the friend requests where the user is
@@ -37,6 +38,7 @@ class FriendRequestDetail(generics.RetrieveUpdateDestroyAPIView):
     '''
     serializer_class = FriendRequestSerializer
     permission_classes = [IsFriendRequestedOrReadOnly]
+
     def get_queryset(self):
         """
         Returns a list of all the friend requests where the user is
@@ -48,6 +50,7 @@ class FriendRequestDetail(generics.RetrieveUpdateDestroyAPIView):
             return FriendRequest.objects.filter(owner=user) | FriendRequest.objects.filter(to_user=user)
         else:
             return FriendRequest.objects.none()
+
 
 class FriendsList(generics.ListAPIView):
     '''

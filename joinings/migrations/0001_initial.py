@@ -18,12 +18,16 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Joining',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('joining_status', models.CharField(choices=[('1', 'Cannot'), ('2', 'Joining'), ('3', 'let me see')], default='1', max_length=5)),
-                ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='joinings', to='events.event')),
-                ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('joining_status', models.CharField(choices=[
+                 ('1', 'Cannot'), ('2', 'Joining'), ('3', 'let me see')], default='1', max_length=5)),
+                ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                 related_name='joinings', to='events.event')),
+                ('owner', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'ordering': ['-created_at'],

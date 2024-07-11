@@ -8,7 +8,8 @@ class ProfileSerializer(serializers.ModelSerializer):
     is_owner = serializers.SerializerMethodField()
     events_count = serializers.ReadOnlyField()
     joined_events_count = serializers.ReadOnlyField()
-    # Friends id is the id of the friend object between the current user and the profile owner
+    # Friends id is the id of the friend object between
+    # the current user and the profile owner
     friends_id = serializers.SerializerMethodField()
     # Has friend request is the id of the friend request from the to-user
     has_friend_request = serializers.SerializerMethodField()
@@ -42,7 +43,10 @@ class ProfileSerializer(serializers.ModelSerializer):
         '''
         user = self.context['request'].user
         if user.is_authenticated:
-            # Check if the current user has a friend request from the profile owner
+            '''
+            Check if the current user has a friend request
+            from the profile owner
+            '''
             friend_request = FriendRequest.objects.filter(
                 owner=obj.owner, to_user=user).first()
             return {
@@ -53,11 +57,15 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     def get_has_requested_friendship(self, obj):
         '''
-        Check if the current user has requested friendship to the profile owner.
+        Check if the current user has requested friendship 
+        to the profile owner.
         '''
         user = self.context['request'].user
         if user.is_authenticated:
-            # Check if the current user has requested friendship to the profile owner
+            '''
+            Check if the current user has requested friendship
+            to the profile owner
+            '''
             friend_request = FriendRequest.objects.filter(
                 owner=user, to_user=obj.owner).first()
             return {

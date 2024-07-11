@@ -14,6 +14,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='event',
             name='when_start',
-            field=models.DateTimeField(blank=True, default=datetime.datetime.now),
+            field=models.DateTimeField(
+                blank=True, default=datetime.datetime.now),
         ),
     ]

@@ -66,7 +66,6 @@ def handle_friend_request(sender, instance, created, **kwargs):
 
         # Delete the friend request
         instance.delete()
-        
 
 
 @receiver(pre_delete, sender=Friend)

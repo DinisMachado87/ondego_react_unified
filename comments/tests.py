@@ -135,7 +135,8 @@ class commentsTests(APITestCase):
 
     def test_logged_in_user_cannot_edit_other_comments_in_friends_events(self):
         '''
-        Check that a logged in user cannot edit other comments in friends events
+        Check that a logged in user cannot edit other comments
+        in friends events
         '''
         self.client.login(username='Claudia', password='testpassword')
         response = self.client.put(
@@ -148,14 +149,20 @@ class commentsTests(APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_logged_in_user_can_delete_own_comments_in_events_by_friends(self):
-        # Check that a logged in user can delete own comments in events by friends
+    def test_logged_in_user_can_delete_own_comments_in_friends_events(self):
+        '''
+        Check that a logged in user can delete own comments
+        in events by friends
+        '''
         self.client.login(username='Claudia', password='testpassword')
         response = self.client.delete('/comments/1/')
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-    def test_logged_in_user_cannot_delete_other_comments_in_events_by_friends(self):
-        # Check that a logged in user cannot delete other comments in events by friends
+    def test_logged_in_user_cant_delete_other_comments_in_friends_events(self):
+        '''
+        Check that a logged in user cannot delete other comments
+        in events by friends
+        '''
         self.client.login(username='Claudia', password='testpassword')
         response = self.client.delete('/comments/2/')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

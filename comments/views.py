@@ -7,13 +7,11 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Q
 
 
-
 class CommentList(generics.ListCreateAPIView):
     serializer_class = CommentSerializer
     permission_classes = [IsOwnerOrReadOnly]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['event']
-
 
     def get_queryset(self):
         user = self.request.user

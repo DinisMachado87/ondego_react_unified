@@ -16,7 +16,6 @@ class EventSerializer(serializers.ModelSerializer):
     not_joining_count = serializers.ReadOnlyField()
     comments_count = serializers.ReadOnlyField()
 
-
     def validate_image(self, value):
         if value.size > 2 * 1024 * 1024:
             raise serializers.ValidationError(
@@ -30,16 +29,15 @@ class EventSerializer(serializers.ModelSerializer):
                 'Image height too large'
             )
         return value
-    
+
     def get_friends_ids(self, obj):
         # Creates a list of the ids of the friends of the owner of the event
         friends_ids = obj.owner.user_friends.values_list('friend', flat=True)
-        
 
     def get_is_owner(self, obj):
         request = self.context.get('request')
         return obj.owner == request.user
-    
+
     def get_joining_id(self, obj):
         user = self.context['request'].user
         if user.is_authenticated:
@@ -48,7 +46,7 @@ class EventSerializer(serializers.ModelSerializer):
             ).first()
             return joining.id if joining else None
         return None
-    
+
     def get_joining_status(self, obj):
         user = self.context['request'].user
         if user.is_authenticated:
@@ -57,8 +55,6 @@ class EventSerializer(serializers.ModelSerializer):
             ).first()
             return joining.joining_status if joining else None
         return None
-
-        
 
     class Meta:
         model = Event

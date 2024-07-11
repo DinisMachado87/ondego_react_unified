@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='event',
             name='event_image',
-            field=models.ImageField(blank=True, default='../ondego_event_placeholder/fhq6qy9kir3aw2ngkvlt', upload_to='ondego_events/'),
+            field=models.ImageField(
+                blank=True, default='../ondego_event_placeholder/fhq6qy9kir3aw2ngkvlt', upload_to='ondego_events/'),
         ),
     ]

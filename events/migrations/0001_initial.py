@@ -17,7 +17,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Event',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('what_title', models.CharField(blank=True, max_length=50)),
@@ -27,8 +28,10 @@ class Migration(migrations.Migration):
                 ('when_start', models.DateTimeField(blank=True)),
                 ('when_end', models.DateTimeField(blank=True)),
                 ('intention', models.TextField(blank=True, max_length=255)),
-                ('event_image', models.ImageField(blank=True, default='ondego_event_placeholder/fhq6qy9kir3aw2ngkvlt', upload_to='ondego_events/')),
-                ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('event_image', models.ImageField(
+                    blank=True, default='ondego_event_placeholder/fhq6qy9kir3aw2ngkvlt', upload_to='ondego_events/')),
+                ('owner', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'ordering': ['-when_start'],

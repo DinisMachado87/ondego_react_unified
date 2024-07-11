@@ -39,7 +39,7 @@ class FriendRequestTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['to_user'], self.heliot.id)
         self.assertEqual(response.data['owner'], self.claudia.id)
-        
+
     def test_logged_in_user_can_accept_friend_request(self):
         '''
         Check if a logged in user can accept a friend request,
@@ -65,7 +65,7 @@ class FriendRequestTests(APITestCase):
                 'is_approved': True
             }
         )
-        # Check if the friend request was accepted        
+        # Check if the friend request was accepted
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['is_approved'], True)
         # Check if the friends were created automatically through signals
@@ -73,9 +73,11 @@ class FriendRequestTests(APITestCase):
         self.assertEqual(Friend.objects.count(), 2)
         # Checks if the friend was created correctly
         # Checks if the friend was created correctly
-        self.assertTrue(Friend.objects.filter(owner=self.claudia, friend=self.heliot).exists())
+        self.assertTrue(Friend.objects.filter(
+            owner=self.claudia, friend=self.heliot).exists())
         # Checks if the mirror friend was created correctly
-        self.assertTrue(Friend.objects.filter(owner=self.heliot, friend=self.claudia).exists())
+        self.assertTrue(Friend.objects.filter(
+            owner=self.heliot, friend=self.claudia).exists())
         # Check if the friend request was deleted
         self.assertEqual(FriendRequest.objects.count(), 0)
 
@@ -100,8 +102,7 @@ class FriendRequestTests(APITestCase):
         # Check if the friend request was deleted
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(FriendRequest.objects.count(), 0)
-        
-        
+
     def test_owner_can_delete_friend_request(self):
         '''
         Check if the owner can delete a friend request.
