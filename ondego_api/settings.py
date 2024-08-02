@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import os
 import dj_database_url
-import re
 
 from corsheaders.defaults import default_headers, default_methods
 
@@ -69,9 +68,15 @@ ALLOWED_HOSTS = [
     'localhost',
 ]
 
-CORS_ALLOW_HEADERS = list(default_headers)
-CORS_ALLOW_METHODS = list(default_methods)
-CSRF_TRUSTED_ORIGINS = [os.environ.get('CLIENT_ORIGIN_DEV')]
+CORS_ALLOWED_ORIGINS = [
+    os.environ.get('CLIENT_ORIGIN')
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+# CORS_ALLOW_HEADERS = list(default_headers)
+# CORS_ALLOW_METHODS = list(default_methods)
+# CSRF_TRUSTED_ORIGINS = [os.environ.get('CLIENT_ORIGIN_DEV')]
 
 
 # Application definition
@@ -116,11 +121,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-
-if "CLIENT_ORIGIN" in os.environ:
-    CORS_ALLOWED_ORIGINS = [os.environ.get("CLIENT_ORIGIN")]
-
-CORS_ALLOWED_ORIGIN_REGEXES = [r"^https://.*\.codeinstitute-ide\.net$",]
+CORS_ALLOWED_ORIGINS = [os.environ.get("CLIENT_ORIGIN")]
 
 CORS_ALLOW_CREDENTIALS = True
 
