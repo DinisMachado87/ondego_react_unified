@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from allauth.socialaccount.tests import OAuthTestsMixin
 from allauth.tests import MockedResponse, TestCase
 
@@ -9,7 +8,7 @@ class TwitterTests(OAuthTestsMixin, TestCase):
     provider_id = TwitterProvider.id
 
     def get_mocked_response(self):
-        # FIXME: Replace with actual/complete Twitter response
+        # TODO: Replace with actual/complete Twitter response
         return [
             MockedResponse(
                 200,
@@ -28,6 +27,9 @@ class TwitterTests(OAuthTestsMixin, TestCase):
             )
         ]  # noqa
 
+    def get_expected_to_str(self):
+        return "pennersr"
+
     def test_login(self):
         account = super(TwitterTests, self).test_login()
         tw_account = account.get_provider_account()
@@ -37,3 +39,4 @@ class TwitterTests(OAuthTestsMixin, TestCase):
             "http://pbs.twimg.com/profile_images/793142149/r.png",
         )
         self.assertEqual(tw_account.get_profile_url(), "http://twitter.com/pennersr")
+        self.assertEqual(tw_account.to_str(), "pennersr")

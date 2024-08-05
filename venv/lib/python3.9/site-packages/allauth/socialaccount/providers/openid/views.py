@@ -1,3 +1,4 @@
+from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
@@ -9,7 +10,6 @@ from openid.consumer.discover import DiscoveryFailure
 from openid.extensions.ax import AttrInfo, FetchRequest
 from openid.extensions.sreg import SRegRequest
 
-from allauth.socialaccount import providers
 from allauth.socialaccount.app_settings import QUERY_EMAIL
 from allauth.socialaccount.helpers import (
     complete_social_login,
@@ -34,7 +34,11 @@ def _openid_consumer(request, provider, endpoint):
 class OpenIDLoginView(View):
     template_name = "openid/login.html"
     form_class = LoginForm
-    provider = OpenIDProvider
+    provider_class = OpenIDProvider
+
+    def dispatch(self, request, *args, **kwargs):
+        self.provider = self.provider_class(request)
+        return super().dispatch(request, *args, **kwargs)
 
     def get(self, request):
         form = self.get_form()
@@ -45,7 +49,7 @@ class OpenIDLoginView(View):
             return self.perform_openid_auth(form)
         except (UnicodeDecodeError, DiscoveryFailure) as e:
             # UnicodeDecodeError: necaris/python3-openid#1
-            return render_authentication_error(request, self.provider.id, exception=e)
+            return render_authentication_error(request, self.provider, exception=e)
 
     def post(self, request):
         form = self.get_form()
@@ -61,7 +65,7 @@ class OpenIDLoginView(View):
         if self.request.method == "GET" and "openid" not in self.request.GET:
             return self.form_class(
                 initial={
-                    "next": self.request.GET.get("next"),
+                    "next": self.request.GET.get(REDIRECT_FIELD_NAME),
                     "process": self.request.GET.get("process"),
                 }
             )
@@ -86,7 +90,7 @@ class OpenIDLoginView(View):
             return form
 
         request = self.request
-        provider = self.provider(request)
+        provider = self.provider
         endpoint = form.cleaned_data["openid"]
         client = self.get_client(provider, endpoint)
         realm = self.get_realm(provider)
@@ -100,7 +104,6 @@ class OpenIDLoginView(View):
             ax = FetchRequest()
             for name in AXAttributes:
                 ax.add(AttrInfo(name, required=True))
-            provider = OpenIDProvider(request)
             server_settings = provider.get_server_settings(request.GET.get("openid"))
             extra_attributes = server_settings.get("extra_attributes", [])
             for _, name, required in extra_attributes:
@@ -122,18 +125,16 @@ login = OpenIDLoginView.as_view()
 
 
 class OpenIDCallbackView(View):
-    provider = OpenIDProvider
+    provider_class = OpenIDProvider
 
     def get(self, request):
-        provider = self.provider(request)
+        provider = self.provider = self.provider_class(request)
         endpoint = request.GET.get("openid.op_endpoint", "")
         client = self.get_client(provider, endpoint)
         response = self.get_openid_response(client)
 
         if response.status == consumer.SUCCESS:
-            login = providers.registry.by_id(
-                self.provider.id, request
-            ).sociallogin_from_response(request, response)
+            login = provider.sociallogin_from_response(request, response)
             login.state = SocialLogin.unstash_state(request)
             return self.complete_login(login)
         else:
@@ -149,7 +150,7 @@ class OpenIDCallbackView(View):
         return complete_social_login(self.request, login)
 
     def render_error(self, error):
-        return render_authentication_error(self.request, self.provider.id, error=error)
+        return render_authentication_error(self.request, self.provider, error=error)
 
     def get_client(self, provider, endpoint):
         return _openid_consumer(self.request, provider, endpoint)
