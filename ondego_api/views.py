@@ -1,5 +1,10 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework_simplejwt.views import TokenVerifyView
+from rest_framework_simplejwt.exceptions import InvalidToken
+from rest_framework_simplejwt.tokens import UntypedToken
+from django.contrib.auth.models import User
+from rest_framework import status
 from .settings import (
     JWT_AUTH_COOKIE,
     JWT_AUTH_REFRESH_COOKIE,
@@ -35,3 +40,23 @@ def logout_route(request):
         secure=JWT_AUTH_SECURE,
     )
     return response
+
+
+class CustomTokenVerifyView(TokenVerifyView):
+    def post(self, request, *args, **kwargs):
+        token = request.data.get('token')
+
+        try:
+            # Decode the token
+            UntypedToken(token)
+        except InvalidToken:
+            return Response({"detail": "Invalid token."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        # Perform additional user validation checks
+        user_id = UntypedToken(token).payload.get('user_id')
+        user = User.objects.get(id=user_id)
+
+        if not user.is_active:
+            return Response({"detail": "User account is disabled."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        return Response({"detail": "Token is valid."}, status=status.HTTP_200_OK)
