@@ -1,4 +1,4 @@
-#!/Users/dinismachado/Documents/Code/ondego-api/venv/bin/python3
+#!/Users/dinismachado/Documents/Code/ondego-api/venv/bin/python3.12
 # -*- coding: utf-8 -*-
 import re
 import sys
