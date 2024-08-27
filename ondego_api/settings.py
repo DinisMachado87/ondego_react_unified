@@ -14,8 +14,6 @@ from pathlib import Path
 import os
 import dj_database_url
 
-from corsheaders.defaults import default_headers, default_methods
-
 if os.path.exists('env.py'):
     import env
 
@@ -50,9 +48,8 @@ JWT_AUTH_SECURE = True
 JWT_AUTH_COOKIE = 'my-app-auth'
 JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
 JWT_AUTH_SAMESITE = 'None'
-
 REST_AUTH_SERIALIZERS = {
-    'USER_DETAILS_SERIALIZER': 'ondego_api.serializers.CurrentUserSerializer'
+    'USER_DETAILS_SERIALIZER': 'ondego_api.serializers.CurrentUserSerializer',
 }
 
 # Quick-start development settings - unsuitable for production
@@ -60,6 +57,7 @@ REST_AUTH_SERIALIZERS = {
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY')
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = 'DEBUG' in os.environ
 
@@ -69,15 +67,11 @@ ALLOWED_HOSTS = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    os.environ.get('CLIENT_ORIGIN')
+    os.environ.get('CLIENT_ORIGIN'),
+    "http://localhost:8000",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
-
-# CORS_ALLOW_HEADERS = list(default_headers)
-# CORS_ALLOW_METHODS = list(default_methods)
-# CSRF_TRUSTED_ORIGINS = [os.environ.get('CLIENT_ORIGIN_DEV')]
-
 
 # Application definition
 
@@ -87,8 +81,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'cloudinary_storage',
     'django.contrib.staticfiles',
+    'cloudinary_storage',
     'cloudinary',
     'rest_framework',
     'django_filters',
@@ -113,6 +107,7 @@ SITE_ID = 1
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -121,16 +116,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = [os.environ.get("CLIENT_ORIGIN")]
-
-CORS_ALLOW_CREDENTIALS = True
-
 ROOT_URLCONF = 'ondego_api.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'staticfiles', 'build')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -145,24 +136,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ondego_api.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 if 'DEV' in os.environ:
     DATABASES = {
-        'default': ({
+        'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
-        } if 'DEV' in os.environ else dj_database_url.parse(
-            os.environ.get('DATABASE_URL')
-        ))
+        }
     }
 else:
     DATABASES = {
-        'default': dj_database_url.parse(os.environ.get("DATABASE_URL"))
+        'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
     }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -182,7 +169,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -196,13 +182,18 @@ USE_L10N = True
 
 USE_TZ = True
 
+# Use `whitenoise` for static files storage
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [BASE_DIR / 'staticfiles' / 'build']
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
