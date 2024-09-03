@@ -4,7 +4,7 @@
 
 Visit the deployed app [here](https://ondego-unified-e4541da9959b.herokuapp.com/)
 
-Note: The frontend was originally developed and deployed separately and later integrated being now served within the Django Rest API in a single deployment. To consult the development commit history of the React frontend until it was integrated in this repository please consult the old repository [here](https://github.com/DinisMachado87/ondego_react)
+Note: The frontend was originally developed and deployed separately and later integrated being now served within the Django Rest API in a single deployment. To consult the development commit history of the React frontend until it was integrated in this repository please consult the old frontend repository [here](https://github.com/DinisMachado87/ondego_react)
 
 ## Project Description
 
