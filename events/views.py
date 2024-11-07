@@ -30,7 +30,7 @@ class EventFilter(FilterSet):
             'going_on',
         ]
 
-    def filter_going_on(self, queryset, name, value):
+    def filter_going_on(self, queryset, value):
         '''
         Filter events that are going on or will start in the next two hours
         '''

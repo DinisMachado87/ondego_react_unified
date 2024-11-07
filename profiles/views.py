@@ -28,7 +28,7 @@ class ProfileList(generics.ListAPIView):
         filters.SearchFilter,
         DjangoFilterBackend,
     ]
-    search_fields = ['owner__username']
+    search_fields = ['owner__username', 'name']
     ordering_fields = [
         'owner__username',
         'events_count',
